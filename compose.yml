@@ -1,0 +1,21 @@
+services:
+  peer1:
+    build: .
+    command: [ "peer_chat", "client", "-r", "3031", "-s", "3032" ]
+    networks:
+      peer_chat_net:
+        ipv4_address: 191.0.0.2
+
+  peer2:
+    build: .
+    command: [ "peer_chat", "client", "-r", "3032", "-s", "3031" ]
+    networks:
+      peer_chat_net:
+        ipv4_address: 191.0.0.3
+
+networks:
+  peer_chat_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 191.0.0.0/24
