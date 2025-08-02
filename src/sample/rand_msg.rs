@@ -4,25 +4,91 @@ use rand::rng;
 pub fn get_random_name() -> String {
     let names = [
         // Popular names
-        "Alice", "Bob", "Charlie", "Diana", "Edward", "Fiona", "George", "Hannah",
-        "Isaac", "Julia", "Kevin", "Luna", "Michael", "Nina", "Oliver", "Penny",
-        "Quinn", "Rachel", "Samuel", "Tina", "Uma", "Victor", "Wendy", "Xavier",
-        "Yara", "Zoe",
-
+        "Alice",
+        "Bob",
+        "Charlie",
+        "Diana",
+        "Edward",
+        "Fiona",
+        "George",
+        "Hannah",
+        "Isaac",
+        "Julia",
+        "Kevin",
+        "Luna",
+        "Michael",
+        "Nina",
+        "Oliver",
+        "Penny",
+        "Quinn",
+        "Rachel",
+        "Samuel",
+        "Tina",
+        "Uma",
+        "Victor",
+        "Wendy",
+        "Xavier",
+        "Yara",
+        "Zoe",
         // Classic names
-        "Alexander", "Catherine", "Benjamin", "Elizabeth", "Christopher", "Margaret",
-        "Daniel", "Jennifer", "Frederick", "Patricia", "Gregory", "Rebecca",
-        "Jonathan", "Stephanie", "Matthew", "Victoria",
-
+        "Alexander",
+        "Catherine",
+        "Benjamin",
+        "Elizabeth",
+        "Christopher",
+        "Margaret",
+        "Daniel",
+        "Jennifer",
+        "Frederick",
+        "Patricia",
+        "Gregory",
+        "Rebecca",
+        "Jonathan",
+        "Stephanie",
+        "Matthew",
+        "Victoria",
         // International names
-        "Akira", "Lucia", "Hassan", "Ingrid", "Diego", "Priya", "Erik", "Sakura",
-        "Marco", "Aaliyah", "Nikolai", "Esperanza", "Olaf", "Fatima", "Pierre",
-        "Svetlana", "Tariq", "Yuki", "Amadou", "Zara",
-
+        "Akira",
+        "Lucia",
+        "Hassan",
+        "Ingrid",
+        "Diego",
+        "Priya",
+        "Erik",
+        "Sakura",
+        "Marco",
+        "Aaliyah",
+        "Nikolai",
+        "Esperanza",
+        "Olaf",
+        "Fatima",
+        "Pierre",
+        "Svetlana",
+        "Tariq",
+        "Yuki",
+        "Amadou",
+        "Zara",
         // Modern names
-        "Aiden", "Madison", "Logan", "Ava", "Mason", "Sophia", "Ethan", "Emma",
-        "Jackson", "Olivia", "Lucas", "Isabella", "Liam", "Mia", "Noah", "Harper",
-        "Sebastian", "Evelyn", "Caleb", "Abigail",
+        "Aiden",
+        "Madison",
+        "Logan",
+        "Ava",
+        "Mason",
+        "Sophia",
+        "Ethan",
+        "Emma",
+        "Jackson",
+        "Olivia",
+        "Lucas",
+        "Isabella",
+        "Liam",
+        "Mia",
+        "Noah",
+        "Harper",
+        "Sebastian",
+        "Evelyn",
+        "Caleb",
+        "Abigail",
     ];
 
     let mut rng = rng();
@@ -239,7 +305,7 @@ pub fn generate_random_text() -> String {
             let verb = verbs_present.choose(&mut rng).unwrap();
             let object = objects.choose(&mut rng).unwrap();
             let location = locations.choose(&mut rng).unwrap();
-            format!("{} {} {} {}.", subject, verb, object, location)
+            format!("{subject} {verb} {object} {location}.")
         }
         1 => {
             // Past tense: Time + subject + verb + adverb
@@ -260,23 +326,23 @@ pub fn generate_random_text() -> String {
             let (subject, being_verb) = being_verbs.choose(&mut rng).unwrap();
             let adjective = adjectives.choose(&mut rng).unwrap();
             let location = locations.choose(&mut rng).unwrap();
-            format!("{} {} {} {}.", subject, being_verb, adjective, location)
+            format!("{subject} {being_verb} {adjective} {location}.")
         }
         3 => {
             // Descriptive: There + being verb + adjective + object + location
             let adjective = adjectives.choose(&mut rng).unwrap();
             let object = objects.choose(&mut rng).unwrap();
             let location = locations.choose(&mut rng).unwrap();
-            format!("There is {} {} {}.", adjective, object, location)
+            format!("There is {adjective} {object} {location}.")
         }
         4 => {
             // Exclamatory: Look at + adjective + object!
             let adjective = adjectives.choose(&mut rng).unwrap();
             let object = objects.choose(&mut rng).unwrap();
-            match rng.gen_range(0..3) {
-                0 => format!("Look at that {} {}!", adjective, object),
-                1 => format!("What {} {} that is!", adjective, object),
-                _ => format!("How {} {} looks!", adjective, object),
+            match rng.random_range(0..3) {
+                0 => format!("Look at that {adjective} {object}!"),
+                1 => format!("What {adjective} {object} that is!"),
+                _ => format!("How {adjective} {object} looks!"),
             }
         }
         5 => {
@@ -286,7 +352,7 @@ pub fn generate_random_text() -> String {
             let verb = verbs_present.choose(&mut rng).unwrap();
             let adjective = adjectives.choose(&mut rng).unwrap();
             let object = objects.choose(&mut rng).unwrap();
-            format!("{} {} {} {} {}.", subject, adverb, verb, adjective, object)
+            format!("{subject} {adverb} {verb} {adjective} {object}.")
         }
         6 => {
             // Question format
@@ -294,10 +360,10 @@ pub fn generate_random_text() -> String {
             let verb = verbs_present.choose(&mut rng).unwrap();
             let object = objects.choose(&mut rng).unwrap();
             let location = locations.choose(&mut rng).unwrap();
-            match rng.gen_range(0..3) {
-                0 => format!("Did {} {} {} {}?", subject, verb, object, location),
-                1 => format!("Can {} {} {} {}?", subject, verb, object, location),
-                _ => format!("Will {} {} {} {}?", subject, verb, object, location),
+            match rng.random_range(0..3) {
+                0 => format!("Did {subject} {verb} {object} {location}?"),
+                1 => format!("Can {subject} {verb} {object} {location}?"),
+                _ => format!("Will {subject} {verb} {object} {location}?"),
             }
         }
         _ => {
@@ -307,7 +373,7 @@ pub fn generate_random_text() -> String {
             let sentence2 =
                 generate_descriptive_sentence(&mut rng, &adjectives, &objects, &locations);
             let sentence3 = generate_action_sentence(&mut rng, &subjects, &verbs_past, &adverbs);
-            format!("{}. {}. {}.", sentence1, sentence2, sentence3)
+            format!("{sentence1}. {sentence2}. {sentence3}.")
         }
     }
 }
@@ -323,7 +389,7 @@ fn generate_simple_sentence(
     let verb = verbs.choose(rng).unwrap();
     let object = objects.choose(rng).unwrap();
     let location = locations.choose(rng).unwrap();
-    format!("{} {} {} {}", subject, verb, object, location)
+    format!("{subject} {verb} {object} {location}")
 }
 
 fn generate_descriptive_sentence(
@@ -335,7 +401,7 @@ fn generate_descriptive_sentence(
     let adjective = adjectives.choose(rng).unwrap();
     let object = objects.choose(rng).unwrap();
     let location = locations.choose(rng).unwrap();
-    format!("The {} {} appears {}", adjective, object, location)
+    format!("The {adjective} {object} appears {location}")
 }
 
 fn generate_action_sentence(
@@ -347,7 +413,7 @@ fn generate_action_sentence(
     let subject = subjects.choose(rng).unwrap();
     let verb = verbs.choose(rng).unwrap();
     let adverb = adverbs.choose(rng).unwrap();
-    format!("{} {} {}", subject, verb, adverb)
+    format!("{subject} {verb} {adverb}")
 }
 
 fn capitalize_first(s: &str) -> String {
@@ -385,7 +451,7 @@ pub fn generate_themed_text(theme: &str) -> String {
             let subject = nature_subjects.choose(&mut rng).unwrap();
             let verb = nature_verbs.choose(&mut rng).unwrap();
             let object = nature_objects.choose(&mut rng).unwrap();
-            format!("{} {} {}.", subject, verb, object)
+            format!("{subject} {verb} {object}.")
         }
         "technology" => {
             let tech_subjects = [
@@ -407,7 +473,7 @@ pub fn generate_themed_text(theme: &str) -> String {
             let subject = tech_subjects.choose(&mut rng).unwrap();
             let verb = tech_verbs.choose(&mut rng).unwrap();
             let object = tech_objects.choose(&mut rng).unwrap();
-            format!("{} {} {}.", subject, verb, object)
+            format!("{subject} {verb} {object}.")
         }
         _ => generate_random_text(), // Default to regular random text
     }

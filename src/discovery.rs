@@ -1,4 +1,4 @@
-use crate::peer::shared_peer_type;
+use crate::peer::SharedPeerType;
 use std::time;
 use std::time::Duration;
 use tokio::net::UdpSocket;
@@ -8,7 +8,7 @@ pub async fn peer_discovery_service(
     client_socket: UdpSocket,
     discovery_port: u16,
     local_ip: String,
-    peer_list: shared_peer_type,
+    peer_list: SharedPeerType,
 ) {
     println!("discovery port: {}", client_socket.local_addr().unwrap());
     // allowing the socket to send boradcast requests to the gateway
@@ -17,13 +17,13 @@ pub async fn peer_discovery_service(
     tokio::spawn(async move {
         loop {
             client_socket
-                .send_to(b"P2P_REQ", format!("255.255.255.255:{}", discovery_port))
+                .send_to(b"P2P_REQ", format!("255.255.255.255:{discovery_port}"))
                 .await
                 .unwrap();
 
             let discovery_start_instance = time::Instant::now();
             let discovery_timeout = time::Duration::from_secs(5);
-            println!("Waiting for discovery for {:#?} seconds", discovery_timeout);
+            println!("Waiting for discovery for {discovery_timeout:#?} seconds");
 
             let mut peers = vec![];
             while discovery_start_instance.elapsed() < discovery_timeout {

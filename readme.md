@@ -1,81 +1,22 @@
+## P2P data transfer with timeout based peer discovery system w/ UDP and TCP protocols
+
 ```mermaid
-  %%{init: {
-  'theme': 'base',
-  'themeVariables': {
-    'primaryColor': '#997eea',
-    'primaryTextColor': '#ffffff',
-    'primaryBorderColor': '#764ba2',
-    'lineColor': '#f093fb',
-    'secondaryColor': '#4facfe',
-    'tertiaryColor': '#43e97b',
-    'background': '#f8fafc',
-    'mainBkg': '#667eea',
-    'secondBkg': '#764ba2',
-    'tertiaryColor': '#38ef7d'
-  }
-}}%%
-stateDiagram-v2
-    [*] --> 🚀Initializing: Container Start
-    state "🚀 Initializing" as init {
-🔧Binding --> 🎯StartingResponder: Bind to port success
-🎯StartingResponder --> 🕒WaitingForPeers: Discovery responder active
-}
+sequenceDiagram
+    Note over Peer 1, Peer 2: Peers open broadcast receivers and creates TCP ports
+    Note right of Peer 1: Peer 1 opens broadcast on XXXX Port<br/> to receive broadcast requests<br/> and a random OS port on the machine <br/> for TCP connection
+    Note right of Peer 2: Same as Peer 1
+    loop DiscoverPeers
+        Peer 1 -->> Gateway: Broadcast 255.255.255.XXXX<br/> with 'P2P_REQ' Request
+        Gateway -->> Peer 2: Gateway forwards Req to<br/> all other peers listening<br/>on the XXXX Port
+        Peer 2 -->> Peer 1: Peer 2 sends the 'P2P_RES' to<br/> the source of broadcast on<br/> XXXX Port attaches the port YYYY <br/>for accepting TCP connections as well
+        Peer 1 ->> Peer 2: Verify the P2P_RES establishes<br/> TCP connection on the given YYYY Port
+    end
+    Note left of Gateway: The discovery loop repeats<br/> after X timeout to keep <br/> the peer list fresh
+    Note right of Peer 1: Peer 1 has now discovered Peer 2
+    Note right of Peer 2: Peer 2 has its own discovery loop <br/>process to discover Peer 1 as well <br/> and establishes a tcp connection
+    loop PeerMessaging
+        Peer 1 --) Peer 2: Sends Messages over TCP port
+        Peer 2 --) Peer 1: Messaging over TCP port
+    end
 
-state "🔍 Discovery Phase" as discovery {
-📡Broadcasting --> 👂Listening: Send P2P_DISCOVER
-👂Listening --> 📝CollectingResponses: Receive P2P_RESPONSE
-📝CollectingResponses --> 👂Listening: More responses expected
-📝CollectingResponses --> ✅DiscoveryComplete: Timeout reached
-}
-
-state "💬 Communication Phase" as communication {
-🌐FullyConnected --> 📨SendingMessages: All peers discovered
-📨SendingMessages --> 📬ReceivingMessages: Message sent
-📬ReceivingMessages --> 📨SendingMessages: Message received
-📨SendingMessages --> 💔PeerLost: Peer timeout
-💔PeerLost --> 🔄Reconnecting: Attempt reconnection
-🔄Reconnecting --> 🌐FullyConnected : Peer restored
-🔄Reconnecting --> 😞Standalone: All peers lost
-}
-
-🚀Initializing --> 🕒WaitingForPeers: Setup complete
-🕒WaitingForPeers --> 🔍Discovery: Start discovery timer
-
-🔍Discovery --> 🎉ConnectedNetwork: Peers found
-🔍Discovery --> 😞Standalone: No peers found (timeout)
-
-🎉ConnectedNetwork --> 💬Communication: Begin P2P chat
-
-😞Standalone --> 🔍Discovery: Retry discovery
-😞Standalone --> 🛑Shutdown: Manual stop
-
-💬Communication --> 🔍Discovery: Need to rediscover peers
-💬Communication --> 🛑Shutdown: Manual stop
-
-🛑Shutdown --> [*]: Process terminated
-
-%% Error states
-🚀Initializing --> ❌BindError : Port binding failed
-❌BindError --> 🛑Shutdown: Fatal error
-
-%% Notes with emojis and colors
-note right of 🚀Initializing
-🔧 Bind UDP socket to specified port
-🎯 Start discovery responder thread
-⏱️ 2-second startup delay
-end note
-
-note right of 🔍Discovery
-📢 Broadcast P2P_DISCOVER every 100ms
-👂 Listen for P2P_RESPONSE messages
-⏰ 5-second discovery timeout
-🎯 Filter out self-responses
-end note
-
-note right of 💬Communication
-💌 Send chat messages every 2 seconds
-📱 Non-blocking receive (100ms timeout)
-🔄 Maintain peer connectivity
-💔 Handle peer disconnections
-end note
 ```

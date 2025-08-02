@@ -1,6 +1,6 @@
 use crate::cmd::{Cli, Command};
 use crate::discovery::{discovery_request_service, peer_discovery_service};
-use crate::peer::shared_peer_type;
+use crate::peer::SharedPeerType;
 use crate::sample::rand_msg::{generate_random_text, get_random_name};
 use clap::Parser;
 use std::io::Write;
@@ -21,8 +21,8 @@ pub async fn init_app() {
 
 pub async fn startup(port: String) {
     let local_ip = local_ip_address::local_ip().unwrap().to_string();
-    println!("Local ip:{}", local_ip);
-    let peer_list: shared_peer_type = Arc::new(Mutex::new(Vec::new()));
+    println!("Local ip:{local_ip}");
+    let peer_list: SharedPeerType = Arc::new(Mutex::new(Vec::new()));
     let discovery_port = port.parse().unwrap();
     let peer_name = get_random_name();
     let cloned_local_ip = local_ip.to_string();
@@ -54,7 +54,7 @@ pub async fn startup(port: String) {
     let tcp_write_handler = tokio::spawn(async move {
         loop {
             let msg = peer_name.clone() + ": " + &generate_random_text();
-            println!("{} is Sending to all peers: {}", cloned_local_ip, msg);
+            println!("{cloned_local_ip} is Sending to all peers: {msg}");
             let peer_list = cloned_peer_list.lock().unwrap().clone();
             peer_list.iter().for_each(|addr| {
                 let mut sock = TcpStream::connect(addr).unwrap();
