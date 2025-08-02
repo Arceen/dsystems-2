@@ -8,3 +8,4 @@ clap = { version = "4.5.42", features = ["derive"] }
 futures = "0.3.31"
 local-ip-address = "0.6.5"
 tokio = { version = "1.47.0", features = ["full"] }
+rand = "0.9.2"
