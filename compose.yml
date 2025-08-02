@@ -1,0 +1,30 @@
+services:
+  peer1:
+    build: .
+    command: [ "peer_chat", "discovery", "-p", "8888" ]
+    networks:
+      peer_network:
+        ipv4_address:
+          191.0.0.2
+  peer2:
+    build: .
+    command: [ "peer_chat", "discovery", "-p", "8888" ]
+    networks:
+      peer_network:
+        ipv4_address:
+          191.0.0.3
+
+  peer3:
+    build: .
+    command: [ "peer_chat", "discovery", "-p", "8888" ]
+    networks:
+      peer_network:
+        ipv4_address:
+          191.0.0.4
+
+networks:
+  peer_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 191.0.0.0/24
